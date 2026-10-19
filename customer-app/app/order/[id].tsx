@@ -1,5 +1,5 @@
 import React, { useCallback, useState } from 'react';
-import { Alert, RefreshControl, ScrollView, StyleSheet, View } from 'react-native';
+import { Alert, Linking, Pressable, RefreshControl, ScrollView, StyleSheet, View } from 'react-native';
 import { useFocusEffect, useLocalSearchParams } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { supabase } from '../../lib/supabase';
@@ -10,6 +10,13 @@ import { Button, ErrorState, LoadingState } from '../../components/ui';
 import { makeUseStyles, money, radius, Text, useColors } from '../../lib/theme';
 import { FoodImage } from '../../lib/foodImages';
 import type { OrderStatus } from '../../lib/types';
+
+const DEFAULT_RIDER_PHONES: Record<string, string> = {
+  'Amir Khan': '0917-555-0192',
+  'Lena Ortiz': '0928-555-0144',
+  'Marcus Bell': '0939-555-0188',
+  'Sofia Rossi': '0945-555-0177',
+};
 
 type Order = {
   id: string;
@@ -32,6 +39,7 @@ type Order = {
   } | null;
   riders: {
     full_name: string;
+    phone?: string | null;
     vehicle_type: string;
     eta_minutes: number;
     last_lat: number | null;
@@ -59,7 +67,7 @@ export default function OrderDetails() {
       const { data, error: e } = await supabase
         .from('orders')
         .select(
-          '*, restaurants(name,address,latitude,longitude), riders(full_name,vehicle_type,eta_minutes,last_lat,last_lng,last_location_at), order_items(id,name,quantity,line_total)'
+          '*, restaurants(name,address,latitude,longitude), riders(full_name,phone,vehicle_type,eta_minutes,last_lat,last_lng,last_location_at), order_items(id,name,quantity,line_total)'
         )
         .eq('id', id)
         .maybeSingle();
@@ -91,6 +99,7 @@ export default function OrderDetails() {
           },
           riders: {
             full_name: 'Amir Khan',
+            phone: '0917-555-0192',
             vehicle_type: 'Motorbike',
             eta_minutes: 20,
             last_lat: 10.4882,
@@ -154,6 +163,7 @@ export default function OrderDetails() {
   }
 
   const r = o.riders;
+  const riderPhone = r ? (r.phone || DEFAULT_RIDER_PHONES[r.full_name] || null) : null;
   const rest = o.restaurants;
   const restCoord = {
     latitude: rest?.latitude ?? 10.4939,
@@ -289,6 +299,22 @@ export default function OrderDetails() {
                 <Text style={s.infoValue}>
                   {r.full_name} ({r.vehicle_type}) · ~{r.eta_minutes} mins estimated
                 </Text>
+                {riderPhone ? (
+                  <View style={s.riderContactRow}>
+                    <View style={s.riderPhoneBadge}>
+                      <Ionicons name="call-outline" size={12} color={colors.coral} />
+                      <Text style={s.riderPhoneText}>{riderPhone}</Text>
+                    </View>
+                    <Pressable
+                      style={({ pressed }) => [s.callBtn, pressed && { opacity: 0.8 }]}
+                      onPress={() => Linking.openURL(`tel:${riderPhone.replace(/[^0-9+]/g, '')}`)}
+                      accessibilityRole="button"
+                      accessibilityLabel={`Call courier ${r.full_name}`}>
+                      <Ionicons name="call" size={11} color="#FFFFFF" />
+                      <Text style={s.callBtnText}>Call Courier</Text>
+                    </Pressable>
+                  </View>
+                ) : null}
               </View>
             </View>
           )}
@@ -405,6 +431,41 @@ const useS = makeUseStyles((colors) =>
       fontWeight: '700',
       color: colors.ink,
       marginTop: 2,
+    },
+    riderContactRow: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      flexWrap: 'wrap',
+      gap: 8,
+      marginTop: 6,
+    },
+    riderPhoneBadge: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: 5,
+      backgroundColor: colors.coralSoft,
+      paddingHorizontal: 8,
+      paddingVertical: 4,
+      borderRadius: 8,
+    },
+    riderPhoneText: {
+      fontSize: 12,
+      fontWeight: '700',
+      color: colors.coral,
+    },
+    callBtn: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: 4,
+      backgroundColor: colors.coral,
+      paddingHorizontal: 9,
+      paddingVertical: 4,
+      borderRadius: 8,
+    },
+    callBtnText: {
+      fontSize: 11,
+      fontWeight: '800',
+      color: '#FFFFFF',
     },
   })
 );

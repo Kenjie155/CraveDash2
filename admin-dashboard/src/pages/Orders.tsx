@@ -7,10 +7,10 @@ type Order = {
   id: string; order_number: number; status: string; payment_status: string; payment_method: string; total: number;
   subtotal: number; delivery_fee: number; contact_name: string; contact_phone: string; delivery_address: string;
   notes: string | null; rider_id: string | null; created_at: string;
-  restaurants: { name: string } | null; riders: { full_name: string } | null;
+  restaurants: { name: string } | null; riders: { full_name: string; phone?: string | null } | null;
   order_items: { id: string; name: string; quantity: number; line_total: number }[];
 };
-type Rider = { id: string; full_name: string; is_available: boolean };
+type Rider = { id: string; full_name: string; phone?: string | null; is_available: boolean };
 
 // Mirrors public.is_valid_transition in the database (the database is the real enforcer).
 const NEXT: Record<string, string[]> = {
@@ -28,8 +28,8 @@ export default function Orders() {
   const load = async () => {
     setError(null);
     const [o, r] = await Promise.all([
-      supabase.from('orders').select('*, restaurants(name), riders(full_name), order_items(id,name,quantity,line_total)').order('created_at', { ascending: false }).limit(300),
-      supabase.from('riders').select('id,full_name,is_available').order('full_name'),
+      supabase.from('orders').select('*, restaurants(name), riders(full_name,phone), order_items(id,name,quantity,line_total)').order('created_at', { ascending: false }).limit(300),
+      supabase.from('riders').select('id,full_name,phone,is_available').order('full_name'),
     ]);
     if (o.error) return setError(o.error.message);
     setRows(o.data as unknown as Order[]); setRiders((r.data ?? []) as Rider[]);
@@ -88,8 +88,13 @@ export default function Orders() {
               <select value={cur.rider_id ?? ''} disabled={['delivered', 'cancelled'].includes(cur.status)}
                 onChange={(e) => e.target.value && rpc('admin_assign_rider', { p_order_id: cur.id, p_rider_id: e.target.value }, 'Rider assigned')}>
                 <option value="">Select rider…</option>
-                {riders.map((r) => <option key={r.id} value={r.id} disabled={!r.is_available && r.id !== cur.rider_id}>{r.full_name}{r.is_available ? '' : ' (unavailable)'}</option>)}
+                {riders.map((r) => <option key={r.id} value={r.id} disabled={!r.is_available && r.id !== cur.rider_id}>{r.full_name}{r.phone ? ` (${r.phone})` : ''}{r.is_available ? '' : ' (unavailable)'}</option>)}
               </select></label>
+            {cur.rider_id ? (
+              <p style={{ marginTop: -6, marginBottom: 12, fontSize: 13, color: '#64748b' }}>
+                Assigned Courier Contact: <b style={{ color: '#0f172a' }}>{cur.riders?.phone || riders.find((r) => r.id === cur.rider_id)?.phone || 'No phone recorded'}</b>
+              </p>
+            ) : null}
 
             <div className="row">
               <span>Cash on delivery: <b>{cur.payment_status}</b></span>

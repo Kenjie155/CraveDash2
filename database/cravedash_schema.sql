@@ -505,11 +505,11 @@ begin
     (r3,c_sushi,'Dragon Roll','Eel, avocado, cucumber, tobiko',329.00,'🍱',false),
     (r3,c_dess,'Chocolate Lava Cake','Warm center, vanilla ice cream',119.00,'🍰',false);
 
-  insert into public.riders (full_name, vehicle_type, rating, completed_deliveries, base_fee, eta_minutes) values
-    ('Amir Khan','Motorbike',4.9,312,45.00,20),
-    ('Lena Ortiz','Bicycle',4.8,188,30.00,28),
-    ('Marcus Bell','Scooter',4.7,251,40.00,24),
-    ('Sofia Rossi','Car',4.6,97,80.00,22);
+  insert into public.riders (full_name, phone, vehicle_type, rating, completed_deliveries, base_fee, eta_minutes) values
+    ('Amir Khan','0917-555-0192','Motorbike',4.9,312,45.00,20),
+    ('Lena Ortiz','0928-555-0144','Bicycle',4.8,188,30.00,28),
+    ('Marcus Bell','0939-555-0188','Scooter',4.7,251,40.00,24),
+    ('Sofia Rossi','0945-555-0177','Car',4.6,97,80.00,22);
 end $$;
 
 -- If you ran an earlier version of this script, move its untouched New York sample
@@ -536,6 +536,10 @@ update public.riders set base_fee = 45 where full_name = 'Amir Khan'    and base
 update public.riders set base_fee = 30 where full_name = 'Lena Ortiz'   and base_fee < 10;
 update public.riders set base_fee = 40 where full_name = 'Marcus Bell'  and base_fee < 10;
 update public.riders set base_fee = 80 where full_name = 'Sofia Rossi'  and base_fee < 10;
+update public.riders set phone = '0917-555-0192' where full_name = 'Amir Khan'   and phone is null;
+update public.riders set phone = '0928-555-0144' where full_name = 'Lena Ortiz'  and phone is null;
+update public.riders set phone = '0939-555-0188' where full_name = 'Marcus Bell' and phone is null;
+update public.riders set phone = '0945-555-0177' where full_name = 'Sofia Rossi' and phone is null;
 
 -- ---------- 8. Create your first admin (run AFTER you have signed up) ----------
 -- Replace the email, uncomment, and run once in the SQL Editor:

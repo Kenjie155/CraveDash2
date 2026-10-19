@@ -166,17 +166,21 @@ begin
   end if;
 
   -- Ensure riders exist for delivery testing
-  insert into public.riders (full_name, vehicle_type, rating, completed_deliveries, base_fee, eta_minutes, is_available)
-  select 'Amir Khan', 'Motorbike', 4.9, 312, 45.00, 20, true
+  insert into public.riders (full_name, phone, vehicle_type, rating, completed_deliveries, base_fee, eta_minutes, is_available)
+  select 'Amir Khan', '0917-555-0192', 'Motorbike', 4.9, 312, 45.00, 20, true
   where not exists (select 1 from public.riders where full_name = 'Amir Khan');
 
-  insert into public.riders (full_name, vehicle_type, rating, completed_deliveries, base_fee, eta_minutes, is_available)
-  select 'Lena Ortiz', 'Bicycle', 4.8, 188, 30.00, 28, true
+  insert into public.riders (full_name, phone, vehicle_type, rating, completed_deliveries, base_fee, eta_minutes, is_available)
+  select 'Lena Ortiz', '0928-555-0144', 'Bicycle', 4.8, 188, 30.00, 28, true
   where not exists (select 1 from public.riders where full_name = 'Lena Ortiz');
 
-  insert into public.riders (full_name, vehicle_type, rating, completed_deliveries, base_fee, eta_minutes, is_available)
-  select 'Marcus Bell', 'Scooter', 4.7, 251, 40.00, 24, true
+  insert into public.riders (full_name, phone, vehicle_type, rating, completed_deliveries, base_fee, eta_minutes, is_available)
+  select 'Marcus Bell', '0939-555-0188', 'Scooter', 4.7, 251, 40.00, 24, true
   where not exists (select 1 from public.riders where full_name = 'Marcus Bell');
+
+  update public.riders set phone = '0917-555-0192' where full_name = 'Amir Khan' and phone is null;
+  update public.riders set phone = '0928-555-0144' where full_name = 'Lena Ortiz' and phone is null;
+  update public.riders set phone = '0939-555-0188' where full_name = 'Marcus Bell' and phone is null;
 
   -- 3. Insert 36 diverse menu items if not already existing
   -- 1. Burgers & Sandwiches

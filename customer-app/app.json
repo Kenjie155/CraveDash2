@@ -10,7 +10,17 @@
       "expo-router",
       "react-native-maps"
     ],
-    "ios": { "bundleIdentifier": "com.cravedash.app" },
-    "android": { "package": "com.cravedash.app" }
+    "ios": {
+      "bundleIdentifier": "com.cravedash.app"
+    },
+    "android": {
+      "package": "com.cravedash.app"
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "a313f1ad-b5a9-42a8-a213-34be0dca93e3"
+      }
+    }
   }
 }

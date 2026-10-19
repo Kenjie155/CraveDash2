@@ -1,0 +1,16 @@
+{
+  "name": "cravedash",
+  "private": true,
+  "scripts": {
+    "install:all": "npm --prefix customer-app install && npm --prefix admin-dashboard install",
+    "customer": "npm --prefix customer-app run start",
+    "admin": "npm --prefix admin-dashboard run dev -- --host 0.0.0.0"
+  },
+  "dependencies": {
+    "expo": "^57.0.0"
+  },
+  "devDependencies": {
+    "@types/react": "~19.2.4",
+    "typescript": "~6.0.3"
+  }
+}

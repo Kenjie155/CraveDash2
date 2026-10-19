@@ -1,0 +1,16 @@
+{
+  "expo": {
+    "name": "CraveDash",
+    "slug": "cravedash",
+    "scheme": "cravedash",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "automatic",
+    "plugins": [
+      "expo-router",
+      "react-native-maps"
+    ],
+    "ios": { "bundleIdentifier": "com.cravedash.app" },
+    "android": { "package": "com.cravedash.app" }
+  }
+}

@@ -1,0 +1,4 @@
+project_id = "cravedash"
+
+[functions.route-directions]
+verify_jwt = true

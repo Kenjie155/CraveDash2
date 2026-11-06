@@ -1,6 +1,6 @@
 # CraveDash
 
-Food delivery: `customer-app/` (Expo + TypeScript), `admin-dashboard/` (Vite + React + TypeScript), `database/` (Supabase SQL), `supabase/` (Edge Function).
+Food delivery: `customer-app/` (Expo + TypeScript), `admin-dashboard/` (Vite + React + TypeScript), `database/` (Supabase PostSQL), `supabase/` (Edge Function).
 
 ## Quick start (Windows)
 Requires Node.js 22.13 or newer (nodejs.org, LTS). The customer app targets **Expo SDK 57** (React Native 0.86), which matches Expo Go 57.x. Do not run `expo@latest`; it may jump to a newer SDK that your Expo Go cannot open.
